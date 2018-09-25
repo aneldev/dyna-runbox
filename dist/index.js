@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("dyna-ts-module-boilerplate", [], factory);
+		define("dyna-runbox", [], factory);
 	else if(typeof exports === 'object')
-		exports["dyna-ts-module-boilerplate"] = factory();
+		exports["dyna-runbox"] = factory();
 	else
-		root["dyna-ts-module-boilerplate"] = factory();
+		root["dyna-runbox"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,30 +83,79 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Person = /** @class */ (function () {
-    function Person(name, age) {
-        this.name = name;
-        this.age = age;
-    }
-    Person.prototype.getName = function () {
-        return this.name;
-    };
-    Person.prototype.getAge = function () {
-        return this.age;
-    };
-    Person.prototype.get = function () {
-        return {
-            name: this.name,
-            age: this.age
-        };
-    };
-    return Person;
-}());
-exports.Person = Person;
+var runBox_1 = __webpack_require__(1);
+exports.runBox = runBox_1.runBox;
 
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.runBox = function (params_) {
+    var params = __assign({ errorMessage: 'general error' }, params_);
+    var output = params.defaultReturn;
+    var hasError = false;
+    var createErrorObject = function (code, message, error, additionalData) {
+        if (additionalData === void 0) { additionalData = {}; }
+        return ({
+            code: code || params.errorCode,
+            section: params.section,
+            message: message || params.errorMessage,
+            data: __assign({}, (params.errorData || {}), additionalData),
+            error: error,
+        });
+    };
+    var createWarnObject = function (code, message, additionalData) {
+        if (additionalData === void 0) { additionalData = {}; }
+        return ({
+            code: code,
+            section: params.section,
+            message: message || params.errorMessage,
+            data: __assign({}, (params.errorData || {}), additionalData),
+        });
+    };
+    try {
+        output = params.run(function (code, message, data) {
+            params.errors && params.errors.push(createErrorObject(code, message, null, data));
+            params.localErrors && params.localErrors.push(createErrorObject(code, message, null, data));
+            hasError = true;
+        }, function (code, message, data) {
+            params.warns && params.warns.push(createWarnObject(code, message, data));
+            params.localWarns && params.localWarns.push(createWarnObject(code, message, data));
+        });
+    }
+    catch (error) {
+        var additionalData = { error: error, message: error.message, uncautchedError: true };
+        if (params.exceptionsAsWarns) {
+            params.warns && params.warns.push(createWarnObject(null, null, additionalData));
+            params.localWarns && params.localWarns.push(createWarnObject(null, null, additionalData));
+        }
+        else {
+            params.errors && params.errors.push(createErrorObject(null, null, error, additionalData));
+            params.localErrors && params.localErrors.push(createErrorObject(null, null, error, additionalData));
+            hasError = true;
+        }
+    }
+    if (hasError && params.defaultReturn) {
+        return params.defaultReturn;
+    }
+    return output;
+};
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(0);
