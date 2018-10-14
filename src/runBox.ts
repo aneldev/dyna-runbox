@@ -1,10 +1,10 @@
 import {IError, IWarn} from "dyna-interfaces";
 
-export interface IRunBox<T> {
+export interface IRunBox<TResult> {
 	section: string,
 	run: (error: (code: string | number, message?: string, data?: any) => void,     // trigger custom errors
-	      warn: (code: string | number, message: string, data?: any) => void) => T, // add a warn
-	defaultReturn?: T,            // will be returned in case of error
+	      warn: (code: string | number, message: string, data?: any) => void) => TResult, // add a warn
+	defaultReturn?: TResult,            // will be returned in case of error
 	errorCode?: string | number,  // default error code, in case on raised error
 	errorMessage?: string,        // default error message, in case on raised error
 	errorData?: any,              // error data ara debug data will be delivered with the error
@@ -17,12 +17,12 @@ export interface IRunBox<T> {
 
 export {IError, IWarn};
 
-export const runBox = <T>(params_: IRunBox<T>): T => {
-	let params: IRunBox<T> = {
+export const runBox = <TResult>(params_: IRunBox<TResult>): TResult => {
+	let params: IRunBox<TResult> = {
 		errorMessage: 'general error',
 		...params_
 	};
-	let output: T = params.defaultReturn;
+	let output: TResult = params.defaultReturn;
 	let hasError: boolean = false;
 
 	const createErrorObject = (code?: string | number, message?: string, error?: any, additionalData: any = {}): IError => ({
