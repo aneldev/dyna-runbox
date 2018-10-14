@@ -1,9 +1,9 @@
 import { IError, IWarn } from "dyna-interfaces";
-export interface IRunBox<T> {
+export interface IRunBox<TResult> {
     section: string;
     run: (error: (code: string | number, message?: string, data?: any) => void, // trigger custom errors
-    warn: (code: string | number, message: string, data?: any) => void) => T;
-    defaultReturn?: T;
+    warn: (code: string | number, message: string, data?: any) => void) => TResult;
+    defaultReturn?: TResult;
     errorCode?: string | number;
     errorMessage?: string;
     errorData?: any;
@@ -14,4 +14,4 @@ export interface IRunBox<T> {
     exceptionsAsWarns?: boolean;
 }
 export { IError, IWarn };
-export declare const runBox: <T>(params_: IRunBox<T>) => T;
+export declare const runBox: <TResult>(params_: IRunBox<TResult>) => TResult;
