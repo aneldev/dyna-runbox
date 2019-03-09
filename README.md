@@ -8,6 +8,8 @@ _This is not sandbox!_
 
 `runBox = <T>(params: IRunBox<T>): T`
 
+`runAsyncBox = <T>(params: IRunBox<T>): Promise<T|undefined>`
+
 # Params
 
 ```

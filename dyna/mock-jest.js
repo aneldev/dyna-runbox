@@ -28,7 +28,7 @@ global.describe = (description, cbDefineIts) => {
 	startTests();
 };
 
-global.describe.skip = () => undefined;
+global.describe.skip = description => global.describe(description, ()=>console.log('               --> skipped'));
 
 global.it = (description, cbTest) => {
 	global._mockJest.descriptions[global._mockJest.descriptions.length - 1].its.push({
@@ -38,7 +38,7 @@ global.it = (description, cbTest) => {
 	startTests();
 };
 
-global.it.skip = () => undefined;
+global.it.skip = description => global.it(description, () => console.log('          --> skipped'));
 
 global.expect = (expectValue) => {
 	return comparisons(expectValue);
@@ -132,19 +132,19 @@ function finished() {
 	let report = 'All TEST finished, results:' + ' ' + 'errors:' + ' ' + global._mockJest.errors + ' ' + 'passed:' + ' ' + global._mockJest.passed;
 	console.log('');
 	if (global._mockJest.errors) {
-		console.log(' xx   xx ');
-		console.log('  xx xx  ');
-		console.log('   xxx   ');
-		console.log('  xx xx  ');
-		console.log(' xx   xx ' + report);
+    console.log('xx   xx');
+    console.log(' xx xx ');
+    console.log('  xxx  ');
+    console.log(' xx xx ');
+    console.log('xx   xx' + report);
 		exit(100);
 	}
 	else {
-		console.log('      vv');
-		console.log('     vv');
-		console.log('vv  vv');
-		console.log(' vvvv');
-		console.log('  vv      ' + report);
+    console.log('      vv');
+    console.log('     vv');
+    console.log('vv  vv');
+    console.log(' vvvv');
+    console.log('  vv      ' + report);
 		exit(0);
 	}
 }

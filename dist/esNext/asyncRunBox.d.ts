@@ -1,8 +1,8 @@
-import { IError, IWarn } from "dyna-interfaces";
+import { IError, IWarn } from 'dyna-interfaces';
 export interface IAsyncRunBox<TResult> {
     section: string;
     run: (error: (code: string | number, message?: string, data?: any) => void, // trigger custom errors
-    warn: (code: string | number, message: string, data?: any) => void) => Promise<TResult>;
+    warn: (code: string | number, message: string, data?: any) => void) => Promise<TResult | undefined>;
     defaultReturn?: TResult;
     errorCode?: string | number;
     errorMessage?: string;
@@ -14,4 +14,4 @@ export interface IAsyncRunBox<TResult> {
     exceptionsAsWarns?: boolean;
 }
 export { IError, IWarn };
-export declare const asyncRunBox: <TResult>(params_: IAsyncRunBox<TResult>) => Promise<TResult>;
+export declare const asyncRunBox: <TResult>(params_: IAsyncRunBox<TResult>) => Promise<TResult | undefined>;
