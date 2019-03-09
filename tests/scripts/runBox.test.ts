@@ -1,8 +1,8 @@
-import {IError, IWarn} from "dyna-interfaces";
+import {IError, IWarn} from 'dyna-interfaces';
 
-declare let jasmine: any, describe: any, expect: any, it: any;
+declare const jasmine: any, describe: any, expect: any, it: any;
 
-import {runBox} from '../../src/runBox';
+import {runBox} from '../../src';
 
 if (typeof jasmine !== 'undefined') jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
@@ -11,7 +11,7 @@ if (typeof jasmine !== 'undefined') jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 describe('run box', () => {
 
   it('should run with success result', () => {
-    let result: number = runBox<number>({
+    const result: number | undefined = runBox<number>({
       section: 'test/simple',
       run: () => {
         return 200;
@@ -21,7 +21,7 @@ describe('run box', () => {
   });
 
   it('should run return defaultReturn in case of error', () => {
-    let result: number = runBox<number>({
+    const result: number | undefined = runBox<number>({
       section: 'test/simple',
       run: () => {
         throw new Error('bad things happened');
@@ -32,8 +32,8 @@ describe('run box', () => {
   });
 
   it('should run with default error code', () => {
-    let errors: IError[] = [];
-    let result: number = runBox<number>({
+    const errors: IError[] = [];
+    const result: number | undefined = runBox<number>({
       section: 'test/simple',
       run: () => {
         throw new Error('Something went wrong');
@@ -49,8 +49,8 @@ describe('run box', () => {
   });
 
   it('should run with default error code, description etc', () => {
-    let errors: IError[] = [];
-    let result: number = runBox<number>({
+    const errors: IError[] = [];
+    const result: number | undefined = runBox<number>({
       section: 'test/simple',
       run: () => {
         throw new Error('Something went wrong');
@@ -68,12 +68,12 @@ describe('run box', () => {
   });
 
   it('should run with custom error code, description etc', () => {
-    let errors: IError[] = [];
-    let result: number = runBox<number>({
+    const errors: IError[] = [];
+    const result: number | undefined = runBox<number>({
       section: 'test/simple',
-      run: (error: (code?: string | number, message?: string, additionalData?: any) => void) => {
+      run: (error) => {
         error(1500, 'custom message', {dataSize: 12});
-        return null;
+        return undefined;
       },
       errors,
       defaultReturn: 200200,
@@ -90,12 +90,11 @@ describe('run box', () => {
   });
 
   it('should run with errors and warns', () => {
-    let errors: IError[] = [];
-    let warns: IWarn[] = [];
-    let result: number = runBox<number>({
+    const errors: IError[] = [];
+    const warns: IWarn[] = [];
+    const result: number | undefined = runBox<number>({
       section: 'test/simple',
-      run: (error: (code?: string | number, message?: string, additionalData?: any) => void,
-            warn: (code?: string | number, message?: string, additionalData?: any) => void,) => {
+      run: (error, warn) => {
         warn(1500, 'custom warn message', {dataSize: 12});
         throw new Error('Something went wrong')
         //return null;
@@ -117,9 +116,9 @@ describe('run box', () => {
   });
 
   it('should run return warns in case of esceptions', () => {
-    let errors: IError[] = [];
-    let warns: IWarn[] = [];
-    let result: number = runBox<number>({
+    const errors: IError[] = [];
+    const warns: IWarn[] = [];
+    const result: number | undefined = runBox<number>({
       section: 'test/simple',
       run: () => {
         throw new Error('bad things happened');

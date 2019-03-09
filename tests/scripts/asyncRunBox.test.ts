@@ -1,6 +1,6 @@
-import {IError, IWarn} from "dyna-interfaces";
+import {IError, IWarn} from 'dyna-interfaces';
 
-declare let jasmine: any, describe: any, expect: any, it: any;
+declare const jasmine: any, describe: any, expect: any, it: any;
 
 import {asyncRunBox} from '../../src';
 
@@ -11,19 +11,19 @@ if (typeof jasmine !== 'undefined') jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 describe('async run box', () => {
 
   it('should run with success result', async () => {
-    let result: number = await asyncRunBox<number>({
+    const result: number | undefined = await asyncRunBox<number>({
       section: 'test/simple',
-      run: () => {
-        return Promise.resolve(200);
+      run: async () => {
+        return 200;
       }
     });
     expect(result).toBe(200);
   });
 
   it('should run return defaultReturn in case of error', async () => {
-    let result: number = await asyncRunBox<number>({
+    const result: number | undefined = await asyncRunBox<number>({
       section: 'test/simple',
-      run: () => {
+      run: async () => {
         throw new Error('bad things happened');
       },
       defaultReturn: 600
@@ -32,10 +32,10 @@ describe('async run box', () => {
   });
 
   it('should run with default error code', async () => {
-    let errors: IError[] = [];
-    let result: number = await asyncRunBox<number>({
+    const errors: IError[] = [];
+    const result: number | undefined = await asyncRunBox<number>({
       section: 'test/simple',
-      run: () => {
+      run: async () => {
         throw new Error('Something went wrong');
       },
       errors,
@@ -49,10 +49,10 @@ describe('async run box', () => {
   });
 
   it('should run with default error code, description etc', async () => {
-    let errors: IError[] = [];
-    let result: number = await asyncRunBox<number>({
+    const errors: IError[] = [];
+    const result: number | undefined = await asyncRunBox<number>({
       section: 'test/simple',
-      run: () => {
+      run: async () => {
         throw new Error('Something went wrong');
       },
       errors,
@@ -68,12 +68,13 @@ describe('async run box', () => {
   });
 
   it('should run with custom error code, description etc', async () => {
-    let errors: IError[] = [];
-    let result: number = await asyncRunBox<number>({
+    const errors: IError[] = [];
+    const result: number | undefined = await asyncRunBox<number>({
       section: 'test/simple',
-      run: (error: (code?: string | number, message?: string, additionalData?: any) => void) => {
+      run: async (error, warn) => {
         error(1500, 'custom message', {dataSize: 12});
-        return null;
+        // throw new Error();
+        return undefined;
       },
       errors,
       defaultReturn: 200200,
@@ -90,12 +91,11 @@ describe('async run box', () => {
   });
 
   it('should run with errors and warns', async () => {
-    let errors: IError[] = [];
-    let warns: IWarn[] = [];
-    let result: number = await asyncRunBox<number>({
+    const errors: IError[] = [];
+    const warns: IWarn[] = [];
+    const result: number | undefined = await asyncRunBox<number>({
       section: 'test/simple',
-      run: (error: (code?: string | number, message?: string, additionalData?: any) => void,
-            warn: (code?: string | number, message?: string, additionalData?: any) => void,) => {
+      run: async (error, warn) => {
         warn(1500, 'custom warn message', {dataSize: 12});
         throw new Error('Something went wrong')
       },
@@ -116,11 +116,11 @@ describe('async run box', () => {
   });
 
   it('should run return warns in case of exceptions', async () => {
-    let errors: IError[] = [];
-    let warns: IWarn[] = [];
-    let result: number = await asyncRunBox <number>({
+    const errors: IError[] = [];
+    const warns: IWarn[] = [];
+    const result: number | undefined = await asyncRunBox<number>({
       section: 'test/simple',
-      run: () => {
+      run: async () => {
         throw new Error('bad things happened');
       },
       exceptionsAsWarns: true,
